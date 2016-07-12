@@ -1,8 +1,5 @@
 package com.therewillbebugs.todolist;
 
-/**
- * Created by Michael on 7/12/2016.
- */
 public class Task {
     public enum PRIORITY_LEVEL{
         HIGH, MEDIUM, LOW, NONE
@@ -11,7 +8,7 @@ public class Task {
     //class members
     //-------------------------------------
     private String description;
-    private int timeToCompleteBy, dateOfCompletion;
+    private int timeToCompleteBy, dateOfCompletion; //Temporarily int's, need to change to Date
     private PRIORITY_LEVEL priorityLevel;
     private boolean complete, notifications;
 
