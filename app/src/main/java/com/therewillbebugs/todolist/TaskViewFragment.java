@@ -2,6 +2,7 @@ package com.therewillbebugs.todolist;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,7 +59,6 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerManager = new LinearLayoutManager(rootView.getContext());
         recyclerView.setLayoutManager(recyclerManager);
-
 
         //Temporary TaskList init
         taskList = new ArrayList<Task>();

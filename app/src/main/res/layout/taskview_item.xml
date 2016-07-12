@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_task_priority"
                 android:layout_below="@+id/textview_task_description"
-                android:layout_alignParentTop="true"
                 android:textColor="#FF0000"
                 android:textSize="20dp"/>
 
