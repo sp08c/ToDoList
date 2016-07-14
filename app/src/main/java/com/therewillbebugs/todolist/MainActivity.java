@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     //Toolbar menu
     private Toolbar toolbar;
 
+    //Basic list
     private ArrayList<Task> taskList;
 
     @Override
@@ -61,12 +62,14 @@ public class MainActivity extends AppCompatActivity
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
         int id = item.getItemId();
 
+        //Action Bar/Toolbar selection handlers
         if (id == R.id.action_settings) {
             return true;
         }
-        if(id == R.id.action_add_task){
+        else if(id == R.id.action_add_task){
             initTaskCreateView();
         }
         return super.onOptionsItemSelected(item);
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity
     //region CALLBACK HANDLERS
     @Override
     public void onTaskCreationComplete(boolean result, Task t){
+        //If the task creation was successful, add it to the list
         if(result) {
             taskList.add(t);
         }
@@ -181,6 +185,7 @@ public class MainActivity extends AppCompatActivity
     //region FRAGMENT INITIALIZATION
     private void initTaskView() {
         if (findViewById(R.id.content_frame) != null) {
+            //Create a new Fragment, using ADD because this will always be the first view ran
             TaskViewFragment fragment = new TaskViewFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.content_frame, fragment, TaskViewFragment.TAG);
@@ -191,6 +196,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initTaskCreateView(){
         if(findViewById(R.id.content_frame) != null){
+            //Swap fragments using Replace so that we can return to previous views
             TaskViewCreateFragment fragment = new TaskViewCreateFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

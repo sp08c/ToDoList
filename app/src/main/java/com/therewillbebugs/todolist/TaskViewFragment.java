@@ -1,6 +1,5 @@
 package com.therewillbebugs.todolist;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -10,13 +9,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 
-/**
- * Created by Michael on 7/12/2016.
- */
 public class TaskViewFragment extends android.support.v4.app.Fragment {
     //Class members
     public static String TAG = "TaskViewFragment";

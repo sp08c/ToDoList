@@ -22,9 +22,6 @@ import android.widget.TimePicker;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Created by Michael on 7/12/2016.
- */
 public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
     //Callback setup for Activity communication
     public interface OnTaskCreationCompleteListener{
@@ -37,12 +34,12 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
     private static Task task;  //The 'new' task to be added to the global task list
     private OnTaskCreationCompleteListener callbackListener;
     private Button createButton, cancelButton, pickTimeButton, pickDateButton;
+    private EditText editTextDescription;
+    private RadioGroup priorityRadioGroup;
     private static TextView timeDateTV;
     private static String timeString, dateString;
 
     public TaskViewCreateFragment(){}
-
-
 
     //Override functions
     //-------------------------------------
@@ -52,6 +49,8 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
 
         task = new Task();
 
+        editTextDescription = (EditText)rootView.findViewById(R.id.taskview_create_desc);
+        priorityRadioGroup = (RadioGroup)rootView.findViewById(R.id.taskview_create_radiogrp);
         createButton = (Button)rootView.findViewById(R.id.taskview_create_btn_createtask);
         cancelButton = (Button)rootView.findViewById(R.id.taskview_create_btn_canceltask);
         pickTimeButton = (Button)rootView.findViewById(R.id.taskview_create_btn_picktime);
@@ -122,22 +121,15 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
 
     //private functions
     //-------------------------------------
-
-    public void onRadioButtonClicked(View view){
-
-    }
-
     public void createNewTask(View view){
-        //add task to global task list
+        //Send task back to MainActivity so it can be added to the list
         //TODO: add checks for complete form, require description
-        //TODO: make all of the components private level class members
-        EditText et = (EditText)rootView.findViewById(R.id.taskview_create_desc);
-        task.setDescription(et.getText().toString());
+        task.setDescription(editTextDescription.getText().toString());
 
-        RadioGroup radioGroup = (RadioGroup)rootView.findViewById(R.id.taskview_create_radiogrp);
-        int radioButtonID = radioGroup.getCheckedRadioButtonId();
-        View rdoButton = radioGroup.findViewById(radioButtonID);
-        int index = radioGroup.indexOfChild(rdoButton);
+        //Get the index of the radiobutton (if there are other children, this will fail)
+        int radioButtonID = priorityRadioGroup.getCheckedRadioButtonId();
+        View rdoButton = priorityRadioGroup.findViewById(radioButtonID);
+        int index = priorityRadioGroup.indexOfChild(rdoButton);
         task.setPriorityLevel(Task.PRIORITY_LEVEL.get(index));
 
         if(task != null)
@@ -148,8 +140,6 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
         //return back to previous fragment
         callbackListener.onTaskCreationComplete(false,null);
     }
-
-    //TODO FIX TIME AND DATE ITS BROKEN
 
     //region TIME AND DATE
     public void showTimePickerDialog(View view){
@@ -177,7 +167,7 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
             task.setTime(c);
-
+            //Format the textview
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
             timeString = sdf.format(c.getTime());
             if(!dateString.isEmpty())
@@ -197,9 +187,11 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day){
+            //Set the date in the new task
             Calendar c = Calendar.getInstance();
             c.set(year,month,day);
             task.setDate(c);
+            //Format the textview
             SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy");
             dateString = sdf.format(c.getTime());
             if(!timeString.isEmpty())
