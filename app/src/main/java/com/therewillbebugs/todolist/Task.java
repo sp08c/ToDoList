@@ -27,6 +27,7 @@ public class Task {
 
     //class members
     //-------------------------------------
+    //TODO Change description into title, add description (notes)
     private String description;
     private Calendar time, date;
     private PRIORITY_LEVEL priorityLevel;

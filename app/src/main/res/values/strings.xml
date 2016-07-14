@@ -15,7 +15,7 @@
     <string name="priority_high">High</string>
     <string name="pick_time">Set Time To Complete</string>
     <string name="pick_date">Set Future Date</string>
-    <string name="create_task">Add New Task</string>
+    <string name="done_task">Done</string>
     <string name="cancel_task">Cancel</string>
 
 </resources>

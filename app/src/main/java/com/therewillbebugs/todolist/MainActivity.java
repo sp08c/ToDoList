@@ -1,6 +1,5 @@
 package com.therewillbebugs.todolist;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,10 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements TaskViewCreateFragment.OnTaskCreationCompleteListener {
+        implements TaskViewFragment.OnTaskCreationCompleteListener {
 
     //private members, this should be changed to R.array, temp
     //Drawer Members
@@ -103,14 +100,15 @@ public class MainActivity extends AppCompatActivity
         if(result) {
             taskList.add(t);
         }
-        //Remove the TaskViewCreateFragment, change the view back to the TaskViewFragment
+        //Remove the TaskViewFragment, change the view back to the TaskListFragment
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().executePendingTransactions();
 
         //refresh the taskview, notify data changed
+        //TODO List doesnt reset properly
         if(result) {
             FragmentManager man = this.getSupportFragmentManager();
-            TaskViewFragment frag = (TaskViewFragment) man.findFragmentByTag(TaskViewFragment.TAG);
+            TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
             //TODO Fix this error handling, its gross
             if (frag != null)
                 frag.refreshRecyclerList(taskList);
@@ -188,10 +186,10 @@ public class MainActivity extends AppCompatActivity
     private void initTaskView() {
         if (findViewById(R.id.content_frame) != null) {
             //Create a new Fragment, using ADD because this will always be the first view ran
-            TaskViewFragment fragment = new TaskViewFragment();
+            TaskListFragment fragment = new TaskListFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.content_frame, fragment, TaskViewFragment.TAG);
-            transaction.addToBackStack(TaskViewFragment.TAG);
+            transaction.add(R.id.content_frame, fragment, TaskListFragment.TAG);
+            transaction.addToBackStack(TaskListFragment.TAG);
             transaction.commit();
         }
     }
@@ -199,11 +197,11 @@ public class MainActivity extends AppCompatActivity
     private void initTaskCreateView(){
         if(findViewById(R.id.content_frame) != null){
             //Swap fragments using Replace so that we can return to previous views
-            TaskViewCreateFragment fragment = new TaskViewCreateFragment();
+            TaskViewFragment fragment = new TaskViewFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            transaction.replace(R.id.content_frame, fragment, TaskViewCreateFragment.TAG);
-            transaction.addToBackStack(TaskViewCreateFragment.TAG);
+            transaction.replace(R.id.content_frame, fragment, TaskViewFragment.TAG);
+            transaction.addToBackStack(TaskViewFragment.TAG);
             transaction.commit();
         }
     }
