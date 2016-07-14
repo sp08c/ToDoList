@@ -1,8 +1,10 @@
 package com.therewillbebugs.todolist;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class Task {
+public class Task implements Serializable {
     //Priority Level enum with support for converting ints
     public enum PRIORITY_LEVEL{
         //TODO FIX THE ORDER OF THIS OR THE ORDER ON THE LAYOUT
@@ -49,6 +51,8 @@ public class Task {
         this.priorityLevel = priorityLevel;
         this.complete = false;
         this.notifications = true;
+        this.time = null;
+        this.date = null;
     }
 
     //Mutators
@@ -88,6 +92,21 @@ public class Task {
 
     public Calendar getTime(){return time;}
     public Calendar getDate(){return date;}
+    public String getTimeToString(){
+        if(time != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+            return sdf.format(time.getTime());
+        }
+        else return "";
+    }
+
+    public String getDateToString(){
+        if(date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+            return sdf.format(date.getTime());
+        }
+        else return "";
+    }
 
     //private functions
     //-------------------------------------

@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +22,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements TaskViewFragment.OnTaskCreationCompleteListener {
+        implements TaskListFragment.OnTaskListItemClicked,
+        TaskViewFragment.OnTaskCreationCompleteListener {
 
     //private members, this should be changed to R.array, temp
     //Drawer Members
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity
 
         //Init Task List
         taskList = new ArrayList<Task>();
+        taskList.add(new Task("First task", Task.PRIORITY_LEVEL.HIGH));
+        taskList.add(new Task("Second task", Task.PRIORITY_LEVEL.MEDIUM));
+        taskList.add(new Task("Third task", Task.PRIORITY_LEVEL.LOW));
 
         //Init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         initDrawer();
 
         //Init main fragment, will default to creating TaskView
-        initTaskView();
+        initTaskListView(taskList);
     }
 
     @Override
@@ -67,14 +73,14 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         else if(id == R.id.action_add_task){
-            initTaskCreateView();
+            initTaskView();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(Gravity.START | Gravity.LEFT)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
             return;
         }
@@ -95,6 +101,13 @@ public class MainActivity extends AppCompatActivity
 
     //region CALLBACK HANDLERS
     @Override
+    public void onTaskListItemClicked(int position){
+        //Swap fragments to the TaskView for the given task
+        Log.d("mainactivity", "Task item: " + position);
+        initTaskView(taskList.get(position));
+    }
+
+    @Override
     public void onTaskCreationComplete(boolean result, Task t){
         //If the task creation was successful, add it to the list
         if(result) {
@@ -107,6 +120,7 @@ public class MainActivity extends AppCompatActivity
         //refresh the taskview, notify data changed
         //TODO List doesnt reset properly
         if(result) {
+            Toast.makeText(this, "Num List: " + taskList.size(), Toast.LENGTH_SHORT).show();
             FragmentManager man = this.getSupportFragmentManager();
             TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
             //TODO Fix this error handling, its gross
@@ -116,20 +130,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    //endregion
-
-    //region TASKLIST
-    public void addTask(Task t){
-        taskList.add(t);
-    }
-
-    public final Task getTask(int position){
-        return taskList.get(position);
-    }
-
-    public final ArrayList<Task> getTaskList(){
-        return taskList;
-    }
     //endregion
 
     //region DRAWER
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
     //endregion
 
     //region FRAGMENT INITIALIZATION
-    private void initTaskView() {
+    private void initTaskListView() {
         if (findViewById(R.id.content_frame) != null) {
             //Create a new Fragment, using ADD because this will always be the first view ran
             TaskListFragment fragment = new TaskListFragment();
@@ -194,10 +194,34 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void initTaskCreateView(){
+    private void initTaskListView(ArrayList<Task> taskList) {
+        if (findViewById(R.id.content_frame) != null) {
+            //Create a new Fragment, using ADD because this will always be the first view ran
+            TaskListFragment fragment = TaskListFragment.newInstance(taskList);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            transaction.add(R.id.content_frame, fragment, TaskListFragment.TAG);
+            transaction.addToBackStack(TaskListFragment.TAG);
+            transaction.commit();
+        }
+    }
+
+    private void initTaskView(){
         if(findViewById(R.id.content_frame) != null){
             //Swap fragments using Replace so that we can return to previous views
             TaskViewFragment fragment = new TaskViewFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            transaction.replace(R.id.content_frame, fragment, TaskViewFragment.TAG);
+            transaction.addToBackStack(TaskViewFragment.TAG);
+            transaction.commit();
+        }
+    }
+
+    private void initTaskView(Task task) {
+        if(findViewById(R.id.content_frame) != null){
+            //Swap fragments using Replace so that we can return to previous views
+            TaskViewFragment fragment = TaskViewFragment.newInstance(task);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             transaction.replace(R.id.content_frame, fragment, TaskViewFragment.TAG);

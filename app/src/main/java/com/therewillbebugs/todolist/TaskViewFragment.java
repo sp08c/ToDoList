@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -30,6 +31,8 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
 
     //Class members
     public static String TAG = "TaskViewFragment";
+    public static final String SERIAL_LIST_KEY = "SerialTask";
+
     private View rootView;
     private static Task task;  //The 'new' task to be added to the global task list
     private OnTaskCreationCompleteListener callbackListener;
@@ -38,16 +41,49 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     private RadioGroup priorityRadioGroup;
     private static TextView timeDateTV;
     private static String timeString, dateString;
+    private boolean initNewTask;
+
+    public static TaskViewFragment newInstance(Task t){
+        TaskViewFragment fragment = new TaskViewFragment();
+        if(t != null){
+            Bundle args = new Bundle();
+            args.putSerializable(SERIAL_LIST_KEY,t);
+            fragment.setArguments(args);
+        }
+        return fragment;
+    }
 
     public TaskViewFragment(){}
 
     //Override functions
     //-------------------------------------
     @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        try{
+            callbackListener = (OnTaskCreationCompleteListener)activity;
+        } catch (ClassCastException e){
+            throw new ClassCastException(activity.toString() + " must implement OnTaskCreationCompleteListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if(args != null && args.containsKey(SERIAL_LIST_KEY)) {
+            this.task = (Task) args.getSerializable(SERIAL_LIST_KEY);
+            initNewTask = false;
+        }
+        else{ task = new Task();initNewTask = true;}
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         rootView = inflater.inflate(R.layout.taskview_layout,container,false);
-
-        task = new Task();
 
         editTextDescription = (EditText)rootView.findViewById(R.id.taskview_create_desc);
         priorityRadioGroup = (RadioGroup)rootView.findViewById(R.id.taskview_create_radiogrp);
@@ -72,23 +108,11 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         timeDateTV = (TextView)rootView.findViewById(R.id.taskview_create_tv_datetime);
         timeString = "";
         dateString = "";
+
+        if(!initNewTask)
+            populateView();
+
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        try{
-            callbackListener = (OnTaskCreationCompleteListener)activity;
-        } catch (ClassCastException e){
-            throw new ClassCastException(activity.toString() + " must implement OnTaskCreationCompleteListener");
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -119,8 +143,21 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         super.onDestroy();
     }
 
-    //private functions
+    //functions
     //-------------------------------------
+
+    private void populateView(){
+        editTextDescription.setText(task.getDescription());
+        ((RadioButton)priorityRadioGroup.getChildAt(task.getPriorityLevel().getVal())).setChecked(true);
+
+        dateString = task.getDateToString();
+        timeString = task.getTimeToString();
+        //TODO Clean this up, it wont work in all cases
+        if(!dateString.isEmpty() && !timeString.isEmpty())
+            timeDateTV.setText("Complete By: " + dateString + " at " + timeString);
+        else timeDateTV.setText("Complete By: " + timeString);
+    }
+
     public void createNewTask(View view){
         //Send task back to MainActivity so it can be added to the list
         //TODO: add checks for complete form, require description
