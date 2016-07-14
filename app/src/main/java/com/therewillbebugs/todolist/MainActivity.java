@@ -102,9 +102,11 @@ public class MainActivity extends AppCompatActivity
         //Remove the TaskViewCreateFragment, change the view back to the TaskViewFragment
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().executePendingTransactions();
-        //TODO refresh taskview fragment list somehow
+
+        //refresh the taskview, notify data changed
         FragmentManager man = this.getSupportFragmentManager();
         TaskViewFragment frag = (TaskViewFragment)man.findFragmentByTag(TaskViewFragment.TAG);
+        //TODO Fix this error handling, its gross
         if(frag != null)
             frag.refreshRecyclerList(taskList);
         else Toast.makeText(this, "Error couldn't refresh", Toast.LENGTH_SHORT).show();

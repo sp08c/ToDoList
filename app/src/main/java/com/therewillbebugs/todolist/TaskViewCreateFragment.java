@@ -16,8 +16,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -34,7 +36,9 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
     private View rootView;
     private static Task task;  //The 'new' task to be added to the global task list
     private OnTaskCreationCompleteListener callbackListener;
-    private Button createButton, cancelButton;
+    private Button createButton, cancelButton, pickTimeButton, pickDateButton;
+    private static TextView timeDateTV;
+    private static String timeString, dateString;
 
     public TaskViewCreateFragment(){}
 
@@ -50,7 +54,25 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
 
         createButton = (Button)rootView.findViewById(R.id.taskview_create_btn_createtask);
         cancelButton = (Button)rootView.findViewById(R.id.taskview_create_btn_canceltask);
+        pickTimeButton = (Button)rootView.findViewById(R.id.taskview_create_btn_picktime);
+        pickDateButton = (Button)rootView.findViewById(R.id.taskview_create_btn_pickdate);
 
+        pickTimeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                showTimePickerDialog(view);
+            }
+        });
+        pickDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(view);
+            }
+        });
+
+        timeDateTV = (TextView)rootView.findViewById(R.id.taskview_create_tv_datetime);
+        timeString = "";
+        dateString = "";
         return rootView;
     }
 
@@ -108,6 +130,7 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
     public void createNewTask(View view){
         //add task to global task list
         //TODO: add checks for complete form, require description
+        //TODO: make all of the components private level class members
         EditText et = (EditText)rootView.findViewById(R.id.taskview_create_desc);
         task.setDescription(et.getText().toString());
 
@@ -126,6 +149,8 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
         callbackListener.onTaskCreationComplete(false,null);
     }
 
+    //TODO FIX TIME AND DATE ITS BROKEN
+
     //region TIME AND DATE
     public void showTimePickerDialog(View view){
         DialogFragment timePickFragment = new TimePickerFragment();
@@ -143,15 +168,21 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-            return new TimePickerDialog(getActivity(),this,hour,minute, DateFormat.is24HourFormat(getActivity()));
+            return new TimePickerDialog(getActivity(),TimePickerDialog.THEME_HOLO_LIGHT,this,hour,minute, DateFormat.is24HourFormat(getActivity()));
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute){
             //set the time in the new task
             Calendar c = Calendar.getInstance();
-            c.set(Calendar.HOUR_OF_DAY,hourOfDay);
-            c.set(Calendar.MINUTE,minute);
+            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            c.set(Calendar.MINUTE, minute);
             task.setTime(c);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+            timeString = sdf.format(c.getTime());
+            if(!dateString.isEmpty())
+                timeDateTV.setText("Complete By: " + dateString + " at " + timeString);
+            else timeDateTV.setText("Complete By: " + timeString);
         }
     }
 
@@ -169,6 +200,11 @@ public class TaskViewCreateFragment extends android.support.v4.app.Fragment {
             Calendar c = Calendar.getInstance();
             c.set(year,month,day);
             task.setDate(c);
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+            dateString = sdf.format(c.getTime());
+            if(!timeString.isEmpty())
+                timeDateTV.setText("Complete By: " + dateString + " at " + timeString);
+            else timeDateTV.setText("Complete By: " + dateString);
         }
     }
     //endregion
