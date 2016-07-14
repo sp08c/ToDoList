@@ -1,5 +1,6 @@
 package com.therewillbebugs.todolist;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +19,15 @@ import java.util.ArrayList;
  */
 public class TaskViewFragment extends android.support.v4.app.Fragment {
     //Class members
+    public static String TAG = "TaskViewFragment";
     private View rootView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerManager;
     private RecyclerView.Adapter recyclerAdapter;
+    private Toolbar toolbar;
 
+
+    //TODO: REMVOE THIS
     private ArrayList<Task> taskList;
 
     public TaskViewFragment(){}
@@ -42,6 +47,11 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -71,11 +81,13 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         recyclerView.setAdapter(recyclerAdapter);
     }
 
-
-
     //endregion
 
-
-
+    public void refreshRecyclerList(final ArrayList<Task> taskList){
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        ((TaskViewAdapter)recyclerAdapter).swap(taskList);
+        recyclerAdapter.notifyDataSetChanged();
+    }
 
 }

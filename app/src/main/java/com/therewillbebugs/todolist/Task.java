@@ -1,19 +1,48 @@
 package com.therewillbebugs.todolist;
 
+import java.util.Calendar;
+
 public class Task {
+    //Priority Level enum with support for converting ints
     public enum PRIORITY_LEVEL{
-        HIGH, MEDIUM, LOW, NONE
+        //TODO FIX THE ORDER OF THIS OR THE ORDER ON THE LAYOUT
+        NONE(0), HIGH(1), MEDIUM(2), LOW(3);
+
+        private int val;
+
+        private PRIORITY_LEVEL(int val){
+            this.val = val;
+        }
+
+        public int getVal(){return val;}
+
+        public static PRIORITY_LEVEL get(int v){
+            for(PRIORITY_LEVEL level : PRIORITY_LEVEL.values()){
+                if(level.getVal() == v)
+                    return level;
+            }
+            return null;
+        }
     }
 
     //class members
     //-------------------------------------
     private String description;
-    private int timeToCompleteBy, dateOfCompletion; //Temporarily int's, need to change to Date
+    private Calendar time, date;
     private PRIORITY_LEVEL priorityLevel;
     private boolean complete, notifications;
 
     //public functions
     //-------------------------------------
+    public Task(){
+        this.description = "";
+        this.priorityLevel = PRIORITY_LEVEL.NONE;
+        this.complete = false;
+        this.notifications = true;
+        this.time = null;
+        this.date = null;
+    }
+
     public Task(String description, PRIORITY_LEVEL priorityLevel){
         this.description = description;
         this.priorityLevel = priorityLevel;
@@ -26,17 +55,17 @@ public class Task {
     public void setDescription(String in){
         this.description = in;
     }
-
     public void setPriorityLevel(PRIORITY_LEVEL in){
         this.priorityLevel = in;
     }
-
     public void setComplete(boolean in){
         this.complete = in;
     }
     public void setNotificationsEnabled(boolean in){
         this.notifications = in;
     }
+    public void setTime(Calendar in){this.time = in;}
+    public void setDate(Calendar in){this.date = in;}
 
     //Accessors
     //-------------------------------------
@@ -55,6 +84,9 @@ public class Task {
     public boolean isNotificationsEnabled(){
         return notifications;
     }
+
+    public Calendar getTime(){return time;}
+    public Calendar getDate(){return date;}
 
     //private functions
     //-------------------------------------

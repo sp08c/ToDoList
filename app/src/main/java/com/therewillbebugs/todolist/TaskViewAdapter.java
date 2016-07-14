@@ -57,4 +57,10 @@ public class TaskViewAdapter extends RecyclerView.Adapter<TaskViewAdapter.ViewHo
     public int getItemCount(){
         return taskList.size();
     }
+
+    public void swap(ArrayList<Task> taskList){
+        this.taskList.clear();
+        this.taskList.addAll(taskList);
+        notifyDataSetChanged();
+    }
 }
