@@ -26,7 +26,7 @@ import java.util.Calendar;
 public class TaskViewFragment extends android.support.v4.app.Fragment {
     //Callback setup for Activity communication
     public interface OnTaskCreationCompleteListener{
-        public void onTaskCreationComplete(boolean valid, Task t);
+        public void onTaskCreationComplete(boolean success, Task t, boolean newTaskCreated);
     }
 
     //Class members
@@ -92,19 +92,6 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         pickTimeButton = (Button)rootView.findViewById(R.id.taskview_create_btn_picktime);
         pickDateButton = (Button)rootView.findViewById(R.id.taskview_create_btn_pickdate);
 
-        pickTimeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                showTimePickerDialog(view);
-            }
-        });
-        pickDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDatePickerDialog(view);
-            }
-        });
-
         timeDateTV = (TextView)rootView.findViewById(R.id.taskview_create_tv_datetime);
         timeString = "";
         dateString = "";
@@ -124,10 +111,22 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
                 createNewTask(v);
             }
         });
-        cancelButton.setOnClickListener(new View.OnClickListener(){
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 cancelCreateTask(v);
+            }
+        });
+        pickTimeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                showTimePickerDialog(view);
+            }
+        });
+        pickDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(view);
             }
         });
     }
@@ -169,13 +168,16 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         int index = priorityRadioGroup.indexOfChild(rdoButton);
         task.setPriorityLevel(Task.PRIORITY_LEVEL.get(index));
 
-        if(task != null)
-            callbackListener.onTaskCreationComplete(true,task);
+        if(task != null) {
+            if(initNewTask)
+                callbackListener.onTaskCreationComplete(true, task, true);
+            else callbackListener.onTaskCreationComplete(true,task,false);  //Update task, don't add to list
+        }
     }
 
     public void cancelCreateTask(View view){
         //return back to previous fragment
-        callbackListener.onTaskCreationComplete(false,null);
+        callbackListener.onTaskCreationComplete(false,null,false);
     }
 
     //region TIME AND DATE

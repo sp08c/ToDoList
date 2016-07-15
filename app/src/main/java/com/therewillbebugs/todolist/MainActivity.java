@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTaskCreationComplete(boolean result, Task t){
+    public void onTaskCreationComplete(boolean success, Task t, boolean newTaskCreated){
         //If the task creation was successful, add it to the list
-        if(result) {
+        if(success && newTaskCreated) {
             taskList.add(t);
         }
         //Remove the TaskViewFragment, change the view back to the TaskListFragment
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
         //refresh the taskview, notify data changed
         //TODO List doesnt reset properly
-        if(result) {
+        if(success) {
             Toast.makeText(this, "Num List: " + taskList.size(), Toast.LENGTH_SHORT).show();
             FragmentManager man = this.getSupportFragmentManager();
             TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
