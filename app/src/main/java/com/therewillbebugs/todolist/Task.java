@@ -43,7 +43,7 @@ public class Task implements Serializable {
         this.complete = false;
         this.notifications = true;
         this.time = null;
-        this.date = null;
+        this.date = Calendar.getInstance();
     }
 
     public Task(String description, PRIORITY_LEVEL priorityLevel){
@@ -52,7 +52,7 @@ public class Task implements Serializable {
         this.complete = false;
         this.notifications = true;
         this.time = null;
-        this.date = null;
+        this.date = Calendar.getInstance();
     }
 
     //Mutators

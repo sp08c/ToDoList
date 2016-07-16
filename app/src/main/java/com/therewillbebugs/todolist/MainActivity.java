@@ -11,8 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements TaskListFragment.OnTaskListItemClicked,
@@ -124,6 +123,8 @@ public class MainActivity extends AppCompatActivity
         //If the task creation was successful, add it to the list
         if(success && newTaskCreated) {
             taskList.add(t);
+            NotificationService notify = new NotificationService(this);
+            notify.createNotification(t, Calendar.getInstance());
         }
         swapBackToList();
     }
