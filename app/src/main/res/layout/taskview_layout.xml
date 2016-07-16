@@ -6,17 +6,16 @@
     android:layout_marginTop="?attr/actionBarSize">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/taskview_create_layout_desc"
+        android:id="@+id/taskview_create_layout_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="test2">
+        android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/taskview_create_desc"
+            android:id="@+id/taskview_create_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="@string/task_description_hint"/>
+            android:hint="@string/task_title_hint"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -84,6 +83,21 @@
                 android:text="@string/pick_date"/>
         </RelativeLayout>
     </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/taskview_create_layout_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="test2">
+
+        <EditText
+            android:id="@+id/taskview_create_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/task_description_hint"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

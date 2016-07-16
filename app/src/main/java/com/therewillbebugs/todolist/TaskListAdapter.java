@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener{
         public CardView cv;
-        public TextView description, priority, timedate;
+        public TextView title, description, priority, timedate;
 
         public interface OnCardViewClickListener{
             void cardViewOnClick(View v, int position);
@@ -43,6 +44,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         public ViewHolder(View view, OnCardViewClickListener listener){
             super(view);
             cv = (CardView)view.findViewById(R.id.taskview_cardview);
+            title = (TextView)view.findViewById(R.id.textview_task_title);
             description = (TextView)view.findViewById(R.id.textview_task_description);
             priority = (TextView)view.findViewById(R.id.textview_task_priority);
             timedate = (TextView)view.findViewById(R.id.textview_task_timedate);
@@ -92,6 +94,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(TaskListAdapter.ViewHolder  holder, int position){
+        holder.title.setText(taskList.get(position).getTitle());
         holder.description.setText(taskList.get(position).getDescription());
         holder.priority.setText(taskList.get(position).getPriorityLevel().toString());
         holder.timedate.setText(taskList.get(position).getDateTimeString());

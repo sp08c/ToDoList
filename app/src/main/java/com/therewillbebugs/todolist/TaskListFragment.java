@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
+import android.widget.CheckBox;
 
 import java.util.ArrayList;
 
@@ -102,6 +103,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onCardViewAdapterLongClicked(View view, int position){
+
         callbackListener.onTaskListItemLongClick(position);
     }
 

@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -37,8 +38,9 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     private static Task task;  //The 'new' task to be added to the global task list
     private OnTaskCreationCompleteListener callbackListener;
     private Button createButton, cancelButton, pickTimeButton, pickDateButton;
-    private EditText editTextDescription;
+    private EditText editTextTitle, editTextDescription;
     private RadioGroup priorityRadioGroup;
+
     private static TextView timeDateTV;
     private static String timeString, dateString;
     private boolean initNewTask;
@@ -85,6 +87,7 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         rootView = inflater.inflate(R.layout.taskview_layout,container,false);
 
+        editTextTitle = (EditText)rootView.findViewById(R.id.taskview_create_title);
         editTextDescription = (EditText)rootView.findViewById(R.id.taskview_create_desc);
         priorityRadioGroup = (RadioGroup)rootView.findViewById(R.id.taskview_create_radiogrp);
         createButton = (Button)rootView.findViewById(R.id.taskview_create_btn_createtask);
@@ -148,6 +151,7 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     //-------------------------------------
 
     private void populateView(){
+        editTextTitle.setText(task.getTitle());
         editTextDescription.setText(task.getDescription());
         ((RadioButton)priorityRadioGroup.getChildAt(task.getPriorityLevel().getVal())).setChecked(true);
 
@@ -162,6 +166,7 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     public void createNewTask(View view){
         //Send task back to MainActivity so it can be added to the list
         //TODO: add checks for complete form, require description
+        task.setTitle(editTextTitle.getText().toString());
         task.setDescription(editTextDescription.getText().toString());
 
         //Get the index of the radiobutton (if there are other children, this will fail)

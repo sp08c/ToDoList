@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity
         //Init Task List
         selectedTask = null;
         taskList = new ArrayList<Task>();
-        taskList.add(new Task("First task", Task.PRIORITY_LEVEL.HIGH));
-        taskList.add(new Task("Second task", Task.PRIORITY_LEVEL.MEDIUM));
-        taskList.add(new Task("Third task", Task.PRIORITY_LEVEL.LOW));
+        taskList.add(new Task("First task","This is a task note", Task.PRIORITY_LEVEL.HIGH));
+        taskList.add(new Task("Second task","", Task.PRIORITY_LEVEL.MEDIUM));
+        taskList.add(new Task("Third task","Task note task note", Task.PRIORITY_LEVEL.LOW));
 
         //Init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity
         if(selectedTask != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AppCompatAlertDialog);
             builder.setTitle("Confirm Task Delete");
-            builder.setMessage("The following task will be deleted:\n\n" + selectedTask.getDescription());
+            builder.setMessage("The following task will be deleted:\n\n" + selectedTask.getTitle());
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

@@ -29,7 +29,7 @@ public class Task implements Serializable {
 
     //class members
     //-------------------------------------
-    //TODO Change description into title, add description (notes)
+    private String title;
     private String description;
     private Calendar time, date;
     private PRIORITY_LEVEL priorityLevel;
@@ -38,6 +38,7 @@ public class Task implements Serializable {
     //public functions
     //-------------------------------------
     public Task(){
+        this.title = "";
         this.description = "";
         this.priorityLevel = PRIORITY_LEVEL.NONE;
         this.complete = false;
@@ -46,7 +47,8 @@ public class Task implements Serializable {
         this.date = null;
     }
 
-    public Task(String description, PRIORITY_LEVEL priorityLevel){
+    public Task(String title, String description, PRIORITY_LEVEL priorityLevel){
+        this.title = title;
         this.description = description;
         this.priorityLevel = priorityLevel;
         this.complete = false;
@@ -57,6 +59,7 @@ public class Task implements Serializable {
 
     //Mutators
     //-------------------------------------
+    public void setTitle(String in){this.title = in;}
     public void setDescription(String in){
         this.description = in;
     }
@@ -74,6 +77,7 @@ public class Task implements Serializable {
 
     //Accessors
     //-------------------------------------
+    public String getTitle(){return title;}
     public String getDescription(){
         return description;
     }
