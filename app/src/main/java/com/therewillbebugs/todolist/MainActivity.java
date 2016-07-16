@@ -1,5 +1,6 @@
 package com.therewillbebugs.todolist;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     //Basic list
     private ArrayList<Task> taskList;
+    private Task selectedTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //Init Task List
+        selectedTask = null;
         taskList = new ArrayList<Task>();
         taskList.add(new Task("First task", Task.PRIORITY_LEVEL.HIGH));
         taskList.add(new Task("Second task", Task.PRIORITY_LEVEL.MEDIUM));
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity
         else if(id == R.id.action_add_task){
             initTaskView();
         }
+        else if(id == R.id.action_delete_task){
+            deleteSelectedTask();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -101,10 +108,15 @@ public class MainActivity extends AppCompatActivity
 
     //region CALLBACK HANDLERS
     @Override
-    public void onTaskListItemClicked(int position){
+    public void onTaskListItemClick(int position){
         //Swap fragments to the TaskView for the given task
-        Log.d("mainactivity", "Task item: " + position);
+        selectedTask = (taskList.get(position));
         initTaskView(taskList.get(position));
+    }
+
+    @Override
+    public void onTaskListItemLongClick(int position){
+        selectedTask = (taskList.get(position));
     }
 
     @Override
@@ -113,21 +125,7 @@ public class MainActivity extends AppCompatActivity
         if(success && newTaskCreated) {
             taskList.add(t);
         }
-        //Remove the TaskViewFragment, change the view back to the TaskListFragment
-        getSupportFragmentManager().popBackStack();
-        getSupportFragmentManager().executePendingTransactions();
-
-        //refresh the taskview, notify data changed
-        //TODO List doesnt reset properly
-        if(success) {
-            Toast.makeText(this, "Num List: " + taskList.size(), Toast.LENGTH_SHORT).show();
-            FragmentManager man = this.getSupportFragmentManager();
-            TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
-            //TODO Fix this error handling, its gross
-            if (frag != null)
-                frag.refreshRecyclerList(taskList);
-            else Toast.makeText(this, "Error couldn't refresh", Toast.LENGTH_SHORT).show();
-        }
+        swapBackToList();
     }
 
     //endregion
@@ -230,4 +228,44 @@ public class MainActivity extends AppCompatActivity
         }
     }
     //endregion
+
+    private void deleteSelectedTask(){
+        //Delete the current task opened in taskview
+        if(selectedTask != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AppCompatAlertDialog);
+            builder.setTitle("Confirm Task Delete");
+            builder.setMessage("The following task will be deleted:\n\n" + selectedTask.getDescription());
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    taskList.remove(selectedTask);
+                    dialog.dismiss();
+                    swapBackToList();
+                    selectedTask = null;
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+        }
+        else Toast.makeText(this,"Error, Could not delete task!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void swapBackToList(){
+        //Remove the TaskViewFragment, change the view back to the TaskListFragment
+        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager().executePendingTransactions();
+
+        //refresh the taskview, notify data changed
+        FragmentManager man = this.getSupportFragmentManager();
+        TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
+        //TODO Fix this error handling, its gross
+        if (frag != null)
+            frag.refreshRecyclerList(taskList);
+        else Toast.makeText(this, "Error couldn't refresh", Toast.LENGTH_SHORT).show();
+    }
 }

@@ -20,37 +20,48 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     //Callback interface for activity
     public interface OnCardViewAdapterClickListener{
         void onCardViewAdapterClicked(View v, int position);
+        void onCardViewAdapterLongClicked(View v, int position);
     }
 
     //Class members
     private ArrayList<Task> taskList;
-    private OnCardViewAdapterClickListener callbackListener;
+    private OnCardViewAdapterClickListener cbClickListener;
 
     //Reference to the views
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener{
         public CardView cv;
-        public TextView description, priority;
+        public TextView description, priority, timedate;
 
         public interface OnCardViewClickListener{
             void cardViewOnClick(View v, int position);
+            void cardViewOnLongClick(View v, int position);
         }
 
-        private OnCardViewClickListener holderCallbackListener;
+        private OnCardViewClickListener clickListener;
 
         public ViewHolder(View view, OnCardViewClickListener listener){
             super(view);
             cv = (CardView)view.findViewById(R.id.taskview_cardview);
             description = (TextView)view.findViewById(R.id.textview_task_description);
             priority = (TextView)view.findViewById(R.id.textview_task_priority);
+            timedate = (TextView)view.findViewById(R.id.textview_task_timedate);
 
-            this.holderCallbackListener = listener;
+            this.clickListener = listener;
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view){
             Log.d("adapter", "OnClick");
-            holderCallbackListener.cardViewOnClick(view, getLayoutPosition());
+            clickListener.cardViewOnClick(view, getLayoutPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View view){
+            clickListener.cardViewOnLongClick(view, getLayoutPosition());
+            return true;
         }
 
     }
@@ -59,7 +70,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         //check to see if this is necessary
         this.taskList = new ArrayList<Task>();
         this.taskList.addAll(taskList);
-        this.callbackListener = callbackListener;
+        this.cbClickListener = callbackListener;
     }
 
     @Override
@@ -68,8 +79,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         TaskListAdapter.ViewHolder  vh = new TaskListAdapter.ViewHolder(v, new ViewHolder.OnCardViewClickListener(){
             @Override
             public void cardViewOnClick(View view, int position){
-                Log.d("adapt", "positoin: " + position);
-                callbackListener.onCardViewAdapterClicked(view,position);
+                cbClickListener.onCardViewAdapterClicked(view,position);
+            }
+
+            @Override
+            public void cardViewOnLongClick(View view, int position){
+                cbClickListener.onCardViewAdapterLongClicked(view, position);
             }
         });
         return vh;
@@ -79,6 +94,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public void onBindViewHolder(TaskListAdapter.ViewHolder  holder, int position){
         holder.description.setText(taskList.get(position).getDescription());
         holder.priority.setText(taskList.get(position).getPriorityLevel().toString());
+        holder.timedate.setText(taskList.get(position).getDateTimeString());
     }
 
     @Override
@@ -92,14 +108,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     public void swap(ArrayList<Task> tl){
-        Log.d("adapter", "Tasklist size A: " + tl.size());
         this.taskList.clear();
-        Log.d("adapter", "Tasklist size B: " + tl.size());
-        for(int i = 0; i<tl.size(); i++) {
-            this.taskList.add(tl.get(i));
-            Log.d("added task","#: " + i);
-        }
-        Log.d("adapter", "Tasklist size B: " + this.taskList.size());
+        this.taskList.addAll(tl);
         notifyDataSetChanged();
     }
 }

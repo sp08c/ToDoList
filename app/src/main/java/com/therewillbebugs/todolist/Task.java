@@ -108,6 +108,15 @@ public class Task implements Serializable {
         else return "";
     }
 
+    public String getDateTimeString(){
+        if(time == null && date == null)
+            return "";
+        String tempTime = "", tempDate = "";
+        tempTime = getTimeToString();
+        tempDate = getDateToString();
+        return "Complete By: " + tempDate + " at " + tempTime;
+    }
+
     //private functions
     //-------------------------------------
 }

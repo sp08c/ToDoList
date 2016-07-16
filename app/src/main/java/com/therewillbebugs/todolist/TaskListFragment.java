@@ -4,22 +4,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TaskListFragment extends android.support.v4.app.Fragment implements TaskListAdapter.OnCardViewAdapterClickListener {
+public class TaskListFragment extends android.support.v4.app.Fragment
+        implements TaskListAdapter.OnCardViewAdapterClickListener{
     //Callback setup for Activity communication
     public interface OnTaskListItemClicked{
-        public void onTaskListItemClicked(int position);
+        public void onTaskListItemClick(int position);
+        public void onTaskListItemLongClick(int position);
     }
 
     //Class members
@@ -88,7 +87,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.taskview_menu, menu);
+        inflater.inflate(R.menu.tasklist_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -96,9 +95,14 @@ public class TaskListFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onCardViewAdapterClicked(View view, int position){
         //handle changes to the fragment
-        Log.d("tasklistfragment", "cardviewclick");
+
         // signal to the activity that an item was clicked
-        callbackListener.onTaskListItemClicked(position);
+        callbackListener.onTaskListItemClick(position);
+    }
+
+    @Override
+    public void onCardViewAdapterLongClicked(View view, int position){
+        callbackListener.onTaskListItemLongClick(position);
     }
 
     //private functions
@@ -117,10 +121,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment implements
 
     public void refreshRecyclerList(ArrayList<Task> tl){
         this.taskList.clear();
-        for(int i = 0; i<tl.size(); i++){
-            this.taskList.add(tl.get(i));
-        }
-        Log.d("tasklistfragment", "Final List size before swap: " + this.taskList.size());
+        this.taskList.addAll(tl);
         ((TaskListAdapter)recyclerAdapter).swap(this.taskList);
         recyclerAdapter.notifyDataSetChanged();
     }

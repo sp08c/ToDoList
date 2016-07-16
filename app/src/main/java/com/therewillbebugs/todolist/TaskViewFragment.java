@@ -133,7 +133,9 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.menu_main, menu);
+        if(initNewTask)
+            inflater.inflate(R.menu.menu_main, menu);   //Show empty menu if new task
+        else inflater.inflate(R.menu.taskview_menu, menu);  //Show delete menu if old task
         super.onCreateOptionsMenu(menu, inflater);
     }
 

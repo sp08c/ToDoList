@@ -14,12 +14,19 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_task_cbox_delete"
+                android:visibility="gone"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textview_task_description"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/textview_task_cbox_delete"
                 android:textSize="30dp"/>
 
             <TextView
@@ -29,6 +36,13 @@
                 android:layout_below="@+id/textview_task_description"
                 android:textColor="#FF0000"
                 android:textSize="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textview_task_timedate"
+                android:layout_below="@+id/textview_task_priority"
+                android:textSize="17dp"/>
 
         </RelativeLayout>
 
