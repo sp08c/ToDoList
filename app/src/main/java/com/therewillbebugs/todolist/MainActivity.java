@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity
         //Init Task List
         selectedTask = null;
         taskList = new ArrayList<Task>();
-        taskList.add(new Task("First task", Task.PRIORITY_LEVEL.HIGH));
-        taskList.add(new Task("Second task", Task.PRIORITY_LEVEL.MEDIUM));
-        taskList.add(new Task("Third task", Task.PRIORITY_LEVEL.LOW));
+        //taskList.add(new Task("First task", Task.PRIORITY_LEVEL.HIGH));
+        //taskList.add(new Task("Second task", Task.PRIORITY_LEVEL.MEDIUM));
+        //taskList.add(new Task("Third task", Task.PRIORITY_LEVEL.LOW));
 
         //Init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         if(success && newTaskCreated) {
             taskList.add(t);
             NotificationService notify = new NotificationService(this);
-            notify.createNotification(t, Calendar.getInstance());
+            notify.createNotification(t);
         }
         swapBackToList();
     }

@@ -117,6 +117,19 @@ public class Task implements Serializable {
         return "Complete By: " + tempDate + " at " + tempTime;
     }
 
+    public long getScheduledTimeInMillis() {
+        long scheduledTime = 0;
+
+        if (date != null) {
+            scheduledTime += date.getTimeInMillis();
+        }
+        if (time != null) {
+            scheduledTime += time.getTimeInMillis();
+        }
+
+        return scheduledTime;
+    }
+
     //private functions
     //-------------------------------------
 }
