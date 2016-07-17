@@ -116,7 +116,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTaskListItemLongClick(int position){
-        selectedTask = (taskList.get(position));
+
+    }
+
+    @Override
+    public void onTaskListItemChecked(int position, boolean checked){
+        selectedTask = taskList.get(position);
+        if(checked) {
+            Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
+            selectedTask.setComplete(true);
+            taskList.remove(selectedTask);
+            taskList.add(selectedTask);
+        }
+        else{
+            selectedTask.setComplete(false);
+            taskList.remove(selectedTask);
+            taskList.add(0,selectedTask);
+        }
+        syncTaskList();
     }
 
     @Override
@@ -259,7 +276,10 @@ public class MainActivity extends AppCompatActivity
         //Remove the TaskViewFragment, change the view back to the TaskListFragment
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().executePendingTransactions();
+        syncTaskList();
+    }
 
+    private void syncTaskList(){
         //refresh the taskview, notify data changed
         FragmentManager man = this.getSupportFragmentManager();
         TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);

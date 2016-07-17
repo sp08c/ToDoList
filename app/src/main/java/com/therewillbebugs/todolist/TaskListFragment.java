@@ -20,6 +20,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
     public interface OnTaskListItemClicked{
         public void onTaskListItemClick(int position);
         public void onTaskListItemLongClick(int position);
+        public void onTaskListItemChecked(int position, boolean checked);
     }
 
     //Class members
@@ -103,8 +104,12 @@ public class TaskListFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onCardViewAdapterLongClicked(View view, int position){
-
         callbackListener.onTaskListItemLongClick(position);
+    }
+
+    @Override
+    public void onCardViewAdapterChecked(View view, int position, boolean checked){
+        callbackListener.onTaskListItemChecked(position, checked);
     }
 
     //private functions

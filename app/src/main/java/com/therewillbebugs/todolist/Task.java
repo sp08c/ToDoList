@@ -7,7 +7,6 @@ import java.util.Calendar;
 public class Task implements Serializable {
     //Priority Level enum with support for converting ints
     public enum PRIORITY_LEVEL{
-        //TODO FIX THE ORDER OF THIS OR THE ORDER ON THE LAYOUT
         NONE(0), HIGH(1), MEDIUM(2), LOW(3);
 
         private int val;

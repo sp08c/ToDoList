@@ -22,6 +22,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public interface OnCardViewAdapterClickListener{
         void onCardViewAdapterClicked(View v, int position);
         void onCardViewAdapterLongClicked(View v, int position);
+        void onCardViewAdapterChecked(View v, int position, boolean checked);
     }
 
     //Class members
@@ -33,10 +34,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             implements View.OnClickListener, View.OnLongClickListener{
         public CardView cv;
         public TextView title, description, priority, timedate;
+        public CheckBox complete;
+        private View view;
 
         public interface OnCardViewClickListener{
             void cardViewOnClick(View v, int position);
             void cardViewOnLongClick(View v, int position);
+            void cardViewOnChecked(View v, int position);
         }
 
         private OnCardViewClickListener clickListener;
@@ -48,15 +52,23 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             description = (TextView)view.findViewById(R.id.textview_task_description);
             priority = (TextView)view.findViewById(R.id.textview_task_priority);
             timedate = (TextView)view.findViewById(R.id.textview_task_timedate);
+            complete =  (CheckBox)view.findViewById(R.id.tasklist_item_cbox_complete);
 
             this.clickListener = listener;
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
+            this.view = view;
+
+            complete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.cardViewOnChecked(v, getLayoutPosition());
+                }
+            });
         }
 
         @Override
         public void onClick(View view){
-            Log.d("adapter", "OnClick");
             clickListener.cardViewOnClick(view, getLayoutPosition());
         }
 
@@ -64,6 +76,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         public boolean onLongClick(View view){
             clickListener.cardViewOnLongClick(view, getLayoutPosition());
             return true;
+        }
+
+        public void toggleComplete(boolean complete){
+            if(complete) {
+                view.setAlpha(0.5f);
+                this.complete.setChecked(true);
+            }
+            else{
+                view.setAlpha(1.0f);
+                this.complete.setChecked(false);
+            }
         }
 
     }
@@ -88,16 +111,28 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             public void cardViewOnLongClick(View view, int position){
                 cbClickListener.onCardViewAdapterLongClicked(view, position);
             }
+
+            @Override
+            public void cardViewOnChecked(View view, int position){
+                boolean checked = ((CheckBox)view).isChecked();
+                cbClickListener.onCardViewAdapterChecked(view,position,checked);
+            }
         });
         return vh;
     }
 
     @Override
     public void onBindViewHolder(TaskListAdapter.ViewHolder  holder, int position){
-        holder.title.setText(taskList.get(position).getTitle());
-        holder.description.setText(taskList.get(position).getDescription());
-        holder.priority.setText(taskList.get(position).getPriorityLevel().toString());
-        holder.timedate.setText(taskList.get(position).getDateTimeString());
+        Task task = taskList.get(position);
+        holder.title.setText(task.getTitle());
+        holder.description.setText(task.getDescription());
+        holder.timedate.setText(task.getDateTimeString());
+
+        if(task.getPriorityLevel() != Task.PRIORITY_LEVEL.NONE)
+            holder.priority.setText(task.getPriorityLevel().toString());
+        else holder.priority.setText("");
+
+        holder.toggleComplete(task.isComplete());
     }
 
     @Override

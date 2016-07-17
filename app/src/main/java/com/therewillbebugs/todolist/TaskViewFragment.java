@@ -174,6 +174,7 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
         View rdoButton = priorityRadioGroup.findViewById(radioButtonID);
         int index = priorityRadioGroup.indexOfChild(rdoButton);
         task.setPriorityLevel(Task.PRIORITY_LEVEL.get(index));
+        task.setComplete(false);
 
         if(task != null) {
             if(initNewTask)
