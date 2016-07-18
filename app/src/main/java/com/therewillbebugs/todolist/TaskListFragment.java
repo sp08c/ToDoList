@@ -2,6 +2,7 @@ package com.therewillbebugs.todolist;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-import android.widget.CheckBox;
 
 import java.util.ArrayList;
 
@@ -21,6 +21,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
         public void onTaskListItemClick(int position);
         public void onTaskListItemLongClick(int position);
         public void onTaskListItemChecked(int position, boolean checked);
+        public void onTaskListAddButtonClick();
     }
 
     //Class members
@@ -30,6 +31,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerManager;
     private RecyclerView.Adapter recyclerAdapter;
+    private FloatingActionButton fab;
     private Toolbar toolbar;
     private OnTaskListItemClicked callbackListener;
 
@@ -78,6 +80,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
         rootView = inflater.inflate(R.layout.tasklist_layout,container,false);
 
         initRecycler();
+        initFAB();
 
         return rootView;
     }
@@ -134,4 +137,13 @@ public class TaskListFragment extends android.support.v4.app.Fragment
     }
     //endregion
 
+    public void initFAB(){
+        fab = (FloatingActionButton)rootView.findViewById(R.id.tasklist_floating_action_button);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                callbackListener.onTaskListAddButtonClick();
+            }
+        });
+    }
 }

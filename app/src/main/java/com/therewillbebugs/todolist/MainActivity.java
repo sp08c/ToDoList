@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     //Basic list
-    private ArrayList<Task> taskList;
+    private TaskManager taskManager;
     private Task selectedTask;
 
     @Override
@@ -48,10 +48,8 @@ public class MainActivity extends AppCompatActivity
 
         //Init Task List
         selectedTask = null;
-        taskList = new ArrayList<Task>();
-        taskList.add(new Task("First task","This is a task note", Task.PRIORITY_LEVEL.HIGH));
-        taskList.add(new Task("Second task","", Task.PRIORITY_LEVEL.MEDIUM));
-        taskList.add(new Task("Third task","Task note task note", Task.PRIORITY_LEVEL.LOW));
+        taskManager = new TaskManager();
+        taskManager.tempInit(); //TODO REMOVE THIS
 
         //Init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         initDrawer();
 
         //Init main fragment, will default to creating TaskView
-        initTaskListView(taskList);
+        initTaskListView(taskManager.getTaskList());
     }
 
     @Override
@@ -76,8 +74,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-        else if(id == R.id.action_add_task){
-            initTaskView();
+        else if(id == R.id.action_sort_tasks){
+            initSortDialog();
         }
         else if(id == R.id.action_delete_task){
             deleteSelectedTask();
@@ -110,28 +108,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTaskListItemClick(int position){
         //Swap fragments to the TaskView for the given task
-        selectedTask = (taskList.get(position));
-        initTaskView(taskList.get(position));
+        selectedTask = (taskManager.get(position));
+        initTaskView(taskManager.get(position));
     }
 
     @Override
     public void onTaskListItemLongClick(int position){
-
+        //https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.kjpx35roi
     }
 
     @Override
     public void onTaskListItemChecked(int position, boolean checked){
-        selectedTask = taskList.get(position);
+        selectedTask = taskManager.get(position);
         if(checked) {
             Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
             selectedTask.setComplete(true);
-            taskList.remove(selectedTask);
-            taskList.add(selectedTask);
+            taskManager.remove(selectedTask);
+            taskManager.add(selectedTask);
         }
         else{
             selectedTask.setComplete(false);
-            taskList.remove(selectedTask);
-            taskList.add(0,selectedTask);
+            taskManager.remove(selectedTask);
+            taskManager.add(0,selectedTask);
         }
         syncTaskList();
     }
@@ -140,9 +138,14 @@ public class MainActivity extends AppCompatActivity
     public void onTaskCreationComplete(boolean success, Task t, boolean newTaskCreated){
         //If the task creation was successful, add it to the list
         if(success && newTaskCreated) {
-            taskList.add(t);
+            taskManager.add(t);
         }
         swapBackToList();
+    }
+
+    @Override
+    public void onTaskListAddButtonClick(){
+        initTaskView();
     }
 
     //endregion
@@ -255,7 +258,7 @@ public class MainActivity extends AppCompatActivity
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    taskList.remove(selectedTask);
+                    taskManager.remove(selectedTask);
                     dialog.dismiss();
                     swapBackToList();
                     selectedTask = null;
@@ -279,13 +282,35 @@ public class MainActivity extends AppCompatActivity
         syncTaskList();
     }
 
+    //Syncs the tasklist from taskmanager with the recycler view
     private void syncTaskList(){
         //refresh the taskview, notify data changed
         FragmentManager man = this.getSupportFragmentManager();
         TaskListFragment frag = (TaskListFragment) man.findFragmentByTag(TaskListFragment.TAG);
         //TODO Fix this error handling, its gross
         if (frag != null)
-            frag.refreshRecyclerList(taskList);
+            frag.refreshRecyclerList(taskManager.getTaskList());
         else Toast.makeText(this, "Error couldn't refresh", Toast.LENGTH_SHORT).show();
+    }
+
+    private void initSortDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialog);
+        builder.setTitle("Select Sort Type");
+        builder.setSingleChoiceItems(taskManager.getSortLevels(),0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int item) {
+                if(item == 0){
+                    //taskManager.sortByTimeDate();
+                    syncTaskList();
+                }
+                else if(item == 1){
+                    taskManager.sortByPriority();
+                    syncTaskList();
+                }
+                dialogInterface.dismiss();
+
+            }
+        });
+        builder.create().show();
     }
 }
