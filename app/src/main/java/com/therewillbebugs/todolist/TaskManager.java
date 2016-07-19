@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 public class TaskManager {
     //class members
     private ArrayList<Task> taskList;
+    private int sortLevel;
 
     public TaskManager(){
         taskList = new ArrayList<Task>();
+        sortLevel = 0;
     }
 
     public void tempInit(){
@@ -24,35 +25,8 @@ public class TaskManager {
         return new CharSequence[]{"Time & Date", "Priority"};
     }
 
-    public void sortByPriority(){
-        Collections.sort(taskList, new Comparator<Task>() {
-            @Override
-            public int compare(Task t1, Task t2) {
-                if(t1.isComplete() ^ t2.isComplete()){
-                    if(t1.isComplete())
-                        return 1;
-                    else return -1;
-                }
-                else {
-                    int level = t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
-                    if (level == 0) {
-                        //Sort by time/date
-                        int dates = t1.getDate().compareTo(t2.getDate());
-                        if (t1.getTime() == null || t2.getTime() == null) {
-                            return dates;
-                        }
-
-                        int times = t1.getTime().compareTo(t2.getTime());
-                        if (dates == 0) {  //If dates are equal
-                            return times;
-                        } else return dates;
-                    } else return level;
-                }
-            }
-        });
-    }
-
     public void sortByTimeDate(){
+        this.sortLevel = 0;
         Collections.sort(taskList, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
@@ -82,8 +56,38 @@ public class TaskManager {
         });
     }
 
+
+    public void sortByPriority(){
+        this.sortLevel = 1;
+        Collections.sort(taskList, new Comparator<Task>() {
+            @Override
+            public int compare(Task t1, Task t2) {
+                if(t1.isComplete() ^ t2.isComplete()){
+                    if(t1.isComplete())
+                        return 1;
+                    else return -1;
+                }
+                else {
+                    int level = t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
+                    if (level == 0) {
+                        //Sort by time/date
+                        int dates = t1.getDate().compareTo(t2.getDate());
+                        if (t1.getTime() == null || t2.getTime() == null) {
+                            return dates;
+                        }
+
+                        int times = t1.getTime().compareTo(t2.getTime());
+                        if (dates == 0) {  //If dates are equal
+                            return times;
+                        } else return dates;
+                    } else return level;
+                }
+            }
+        });
+    }
+
     public void swapPositions(int positionA, int positionB){
-        Collections.swap(taskList,positionA,positionB);
+        Collections.swap(taskList, positionA, positionB);
     }
 
     //Mutators
@@ -117,4 +121,5 @@ public class TaskManager {
     public Task get(int position){
         return taskList.get(position);
     }
+    public int getSortLevel(){return sortLevel; }
 }

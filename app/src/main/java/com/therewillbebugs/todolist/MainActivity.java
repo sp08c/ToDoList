@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTaskListItemLongClick(int position){
-        Toast.makeText(this,"Long click",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"Long click",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity
     private void initSortDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialog);
         builder.setTitle("Select Sort Type");
-        builder.setSingleChoiceItems(taskManager.getSortLevels(),0, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(taskManager.getSortLevels(),taskManager.getSortLevel(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int item) {
                 if(item == 0){
