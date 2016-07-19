@@ -50,9 +50,7 @@ public class TaskManager {
     }
 
     public void swapPositions(int positionA, int positionB){
-        Task temp = taskList.get(positionA);
-        taskList.set(positionA, taskList.get(positionB));
-        taskList.set(positionB, temp);
+        Collections.swap(taskList,positionA,positionB);
     }
 
     //Mutators

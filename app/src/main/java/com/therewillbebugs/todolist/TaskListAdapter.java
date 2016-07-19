@@ -1,9 +1,11 @@
 package com.therewillbebugs.todolist;
 
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -23,6 +25,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         void onCardViewAdapterClicked(View v, int position);
         void onCardViewAdapterLongClicked(View v, int position);
         void onCardViewAdapterChecked(View v, int position, boolean checked);
+        void onCardViewAdapterStartDrag(RecyclerView.ViewHolder viewHolder);
     }
 
     //Class members
@@ -78,6 +81,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             return true;
         }
 
+        //Change the fade based on completeness
         public void toggleComplete(boolean complete){
             if(complete) {
                 view.setAlpha(0.5f);
@@ -88,11 +92,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 this.complete.setChecked(false);
             }
         }
-
     }
 
     public TaskListAdapter(ArrayList<Task> taskList, OnCardViewAdapterClickListener callbackListener){
-        //check to see if this is necessary
         this.taskList = new ArrayList<Task>();
         this.taskList.addAll(taskList);
         this.cbClickListener = callbackListener;
@@ -128,11 +130,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.description.setText(task.getDescription());
         holder.timedate.setText(task.getDateTimeString());
 
+        //priority
         if(task.getPriorityLevel() != Task.PRIORITY_LEVEL.NONE)
             holder.priority.setText(task.getPriorityLevel().toString());
         else holder.priority.setText("");
 
+        //complete status
         holder.toggleComplete(task.isComplete());
+
+        //Drag and Drop Support
+        final TaskListAdapter.ViewHolder tempHolder = holder;
+        holder.cv.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                if(MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN)
+                    cbClickListener.onCardViewAdapterStartDrag(tempHolder);
+                return false;
+            }
+        });
     }
 
     @Override

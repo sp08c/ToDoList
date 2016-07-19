@@ -1,17 +1,17 @@
 package com.therewillbebugs.todolist;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-
+import android.support.v7.widget.helper.ItemTouchHelper;
 import java.util.ArrayList;
 
 public class TaskListFragment extends android.support.v4.app.Fragment
@@ -22,6 +22,7 @@ public class TaskListFragment extends android.support.v4.app.Fragment
         public void onTaskListItemLongClick(int position);
         public void onTaskListItemChecked(int position, boolean checked);
         public void onTaskListAddButtonClick();
+        public void onTaskListDragDropSwap(int positionA, int positionB);
     }
 
     //Class members
@@ -31,8 +32,8 @@ public class TaskListFragment extends android.support.v4.app.Fragment
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerManager;
     private RecyclerView.Adapter recyclerAdapter;
+    private ItemTouchHelper itemTouchHelper;
     private FloatingActionButton fab;
-    private Toolbar toolbar;
     private OnTaskListItemClicked callbackListener;
 
     private ArrayList<Task> taskList;
@@ -115,6 +116,11 @@ public class TaskListFragment extends android.support.v4.app.Fragment
         callbackListener.onTaskListItemChecked(position, checked);
     }
 
+    @Override
+    public void onCardViewAdapterStartDrag(RecyclerView.ViewHolder viewHolder){
+        itemTouchHelper.startDrag(viewHolder);
+    }
+
     //private functions
     //-------------------------------------
 
@@ -127,6 +133,23 @@ public class TaskListFragment extends android.support.v4.app.Fragment
 
         recyclerAdapter = new TaskListAdapter(taskList,this);
         recyclerView.setAdapter(recyclerAdapter);
+
+        ItemTouchHelper.Callback simple = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0){
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target){
+                callbackListener.onTaskListDragDropSwap(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                //recyclerAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction){
+                //Change 0 in constructor to ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT for swipe support
+            }
+        };
+
+        itemTouchHelper = new ItemTouchHelper(simple);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     public void refreshRecyclerList(ArrayList<Task> tl){

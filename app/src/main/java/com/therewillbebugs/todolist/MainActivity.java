@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onTaskListItemLongClick(int position){
-        //https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.kjpx35roi
+        Toast.makeText(this,"Long click",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -146,6 +146,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTaskListAddButtonClick(){
         initTaskView();
+    }
+
+    @Override
+    public void onTaskListDragDropSwap(int positionA, int positionB){
+        taskManager.swapPositions(positionA,positionB);
+        syncTaskList();
     }
 
     //endregion
