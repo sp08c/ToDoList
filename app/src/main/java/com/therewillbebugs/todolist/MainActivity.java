@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int item) {
                 if(item == 0){
-                    //taskManager.sortByTimeDate();
+                    taskManager.sortByTimeDate();
                     syncTaskList();
                 }
                 else if(item == 1){

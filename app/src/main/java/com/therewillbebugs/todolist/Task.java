@@ -53,7 +53,7 @@ public class Task implements Serializable {
         this.complete = false;
         this.notifications = true;
         this.time = null;
-        this.date = null;
+        this.date = Calendar.getInstance();
     }
 
     //Mutators
@@ -117,7 +117,9 @@ public class Task implements Serializable {
         String tempTime = "", tempDate = "";
         tempTime = getTimeToString();
         tempDate = getDateToString();
+        if(!tempTime.isEmpty())
         return "Complete By: " + tempDate + " at " + tempTime;
+        else return "Complete By: " + tempDate;
     }
 
     //private functions
