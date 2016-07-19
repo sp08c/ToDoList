@@ -28,21 +28,26 @@ public class TaskManager {
         Collections.sort(taskList, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
-                int level = t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
-                if(level == 0){
-                    //Sort by time/date
-                    int dates = t1.getDate().compareTo(t2.getDate());
-                    if(t1.getTime() == null || t2.getTime() == null) {
-                        return dates;
-                    }
-
-                    int times = t1.getTime().compareTo(t2.getTime());
-                    if(dates == 0){  //If dates are equal
-                        return times;
-                    }
-                    else return dates;
+                if(t1.isComplete() ^ t2.isComplete()){
+                    if(t1.isComplete())
+                        return 1;
+                    else return -1;
                 }
-                else return level;
+                else {
+                    int level = t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
+                    if (level == 0) {
+                        //Sort by time/date
+                        int dates = t1.getDate().compareTo(t2.getDate());
+                        if (t1.getTime() == null || t2.getTime() == null) {
+                            return dates;
+                        }
+
+                        int times = t1.getTime().compareTo(t2.getTime());
+                        if (dates == 0) {  //If dates are equal
+                            return times;
+                        } else return dates;
+                    } else return level;
+                }
             }
         });
     }
@@ -51,28 +56,30 @@ public class TaskManager {
         Collections.sort(taskList, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
-                int dates = t1.getDate().compareTo(t2.getDate());
-
-                //If no time is set, return dates
-                if(t1.getTime() == null || t2.getTime() == null) {
-                    if (dates == 0) //return by priority level if dates are equal
-                        return t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
-                    else return dates;
+                if(t1.isComplete() ^ t2.isComplete()){
+                    if(t1.isComplete())
+                        return 1;
+                    else return -1;
                 }
+                else {
+                    int dates = t1.getDate().compareTo(t2.getDate());
 
-                int times = t1.getTime().compareTo(t2.getTime());
-                if(dates == 0){  //If dates are equal
-                    if(times == 0)
-                        return t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
-                    else return times;
+                    //If no time is set, return dates
+                    if (t1.getTime() == null || t2.getTime() == null) {
+                        if (dates == 0) //return by priority level if dates are equal
+                            return t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
+                        else return dates;
+                    }
+
+                    int times = t1.getTime().compareTo(t2.getTime());
+                    if (dates == 0) {  //If dates are equal
+                        if (times == 0)
+                            return t1.getPriorityLevel().compareTo(t2.getPriorityLevel());
+                        else return times;
+                    } else return dates;
                 }
-                else return dates;
             }
         });
-    }
-
-    public void sortByTimeAndPriority(){
-        //TODO: Default sorting type, will sort first by Date, and then priority for each date
     }
 
     public void swapPositions(int positionA, int positionB){
