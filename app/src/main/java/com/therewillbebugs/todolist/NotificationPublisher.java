@@ -10,16 +10,48 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class NotificationPublisher extends BroadcastReceiver {
-    public static String NOTIFICATION_ID;
-    public static String NOTIFICATION;
+    //public static String NOTIFICATION = "notify";
+    //public static String NOTIFICATION_ID = "a";
+
+    private static Map<Long, AbstractMap.SimpleEntry<String, String>> notifications = new HashMap<>();
+    private static List<Long> notificationTimes = new LinkedList<>();
+
+    public static void addNotificationKeys(Long time, String nKey, String nIdKey) {
+        notifications.put(time, new AbstractMap.SimpleEntry<>(nKey, nIdKey));
+    }
+
+    public static void addNotificationTime(Long time) {
+        notificationTimes.add(time);
+        Collections.sort(notificationTimes);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        int id = intent.getIntExtra(NOTIFICATION_ID, 0);
-        Notification n = intent.getParcelableExtra(NOTIFICATION);
 
-        manager.notify(id, n);
+        AbstractMap.SimpleEntry<String, String> firstNotification =
+                notifications.get(notificationTimes.remove(0));
+
+        if (firstNotification == null) {
+            return;
+        }
+
+        String notificationKey = firstNotification.getKey();
+        String notificationIdKey = firstNotification.getValue();
+
+        int id = intent.getIntExtra(notificationIdKey, 0);
+        Notification n = intent.getParcelableExtra(notificationKey);
+
+        if (n != null) {
+            manager.notify(id, n);
+        }
     }
 }

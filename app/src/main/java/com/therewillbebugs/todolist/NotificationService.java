@@ -11,16 +11,20 @@ import android.support.v4.app.NotificationCompat;
 import java.util.Calendar;
 
 public class NotificationService {
-    private NotificationManager        manager;
+    private NotificationManager manager;
     private NotificationCompat.Builder builder;
-    private AlarmManager               alarmManager;
-    private Context                    ctx;
-    private int                        notificationIndex;
+    private AlarmManager alarmManager;
+    private Context ctx;
+
+    private final StringBuilder notificationIdKey = new StringBuilder("notificationId");
+    private final StringBuilder notificationKey = new StringBuilder("notification");
+    private int notificationIdIndex;
+    private int notificationIndex;
 
     public NotificationService(Context ctx) {
-        this.ctx     = ctx;
-        builder      = new NotificationCompat.Builder(ctx);
-        manager      = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.ctx = ctx;
+        builder = new NotificationCompat.Builder(ctx);
+        manager = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
     }
 
@@ -37,7 +41,7 @@ public class NotificationService {
 
         // schedule notification for future if task has specified time
         long currentTime = Calendar.getInstance().getTimeInMillis();
-        long taskTime    = t.getScheduledTimeInMillis();
+        long taskTime = t.getScheduledTimeInMillis();
         if (taskTime > currentTime) {
             scheduleNotification(n, taskTime - currentTime);
         } else {
@@ -46,23 +50,36 @@ public class NotificationService {
     }
 
     private void scheduleNotification(Notification n, long notifyDelayInMillis) {
+        incrementNotificationIntentKeys();
+
+        NotificationPublisher.addNotificationKeys(
+            notifyDelayInMillis,
+            notificationKey.toString(), notificationIdKey.toString()
+        );
+
+        NotificationPublisher.addNotificationTime(notifyDelayInMillis);
+
         Intent notificationIntent = new Intent(ctx, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationIndex);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, n);
+        notificationIntent.putExtra(notificationIdKey.toString(), notificationIdIndex);
+        notificationIntent.putExtra(notificationKey.toString(), n);
 
         PendingIntent pendingIntent
             = PendingIntent.getBroadcast(
                 ctx,
-                notificationIndex,
+                notificationIdIndex,
                 notificationIntent,
                 0
             );
 
-        // schedule notification
         alarmManager.set(AlarmManager.RTC_WAKEUP, notifyDelayInMillis, pendingIntent);
+        //notificationIdIndex++;
+    }
 
-        // increment notification index - unique id required for each pending intent
-        // and notification so that notifications are not overwritten
-        notificationIndex++;
+    private void incrementNotificationIntentKeys() {
+       //NotificationPublisher.NOTIFICATION_ID
+               notificationIdKey.append(++notificationIdIndex).toString();
+
+       //NotificationPublisher.NOTIFICATION
+               notificationKey.append(++notificationIndex).toString();
     }
 }
