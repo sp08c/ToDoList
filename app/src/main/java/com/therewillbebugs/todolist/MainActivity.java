@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-/**
- * Created by Michael on 7/20/2016.
- */
 public class MainActivity extends AppCompatActivity {
 
     @Override

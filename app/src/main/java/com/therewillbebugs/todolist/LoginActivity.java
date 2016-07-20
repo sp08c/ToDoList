@@ -6,9 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 
-/**
- * Created by Michael on 7/20/2016.
- */
 public class LoginActivity extends AppCompatActivity {
     private AppCompatButton loginButton;
 
