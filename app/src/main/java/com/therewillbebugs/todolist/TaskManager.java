@@ -1,5 +1,7 @@
 package com.therewillbebugs.todolist;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,8 +10,11 @@ public class TaskManager {
     //class members
     private ArrayList<Task> taskList;
     private int sortLevel;
+    private NotificationService notificationService;
 
-    public TaskManager(){
+    public TaskManager(NotificationService notificationService){
+        this.notificationService = notificationService;
+
         taskList = new ArrayList<Task>();
         sortLevel = 0;
     }
@@ -103,6 +108,8 @@ public class TaskManager {
 
     public boolean remove(Task t){
         if(taskList.contains(t)){
+            notificationService.deleteNotification(t);
+
             return taskList.remove(t);
         }
         else return false;

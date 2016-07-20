@@ -42,12 +42,19 @@ public class NotificationService {
         // schedule notification for future if task has specified time
         long currentTime = Calendar.getInstance().getTimeInMillis();
         long taskTime    = t.getScheduledTimeInMillis();
+        t.setNotificationDelayInMillis(taskTime - currentTime);
 
         if (taskTime > currentTime) {
-            scheduleNotification(n, taskTime - currentTime);
+            scheduleNotification(n, t.getNotificationDelayInMillis());
         } else {
             manager.notify(0, n);
         }
+    }
+
+    public void deleteNotification(Task t) {
+        long notificationTime = t.getNotificationDelayInMillis();
+
+        NotificationPublisher.removeNotificationTime(notificationTime);
     }
 
     private void scheduleNotification(Notification n, long notifyDelayInMillis) {

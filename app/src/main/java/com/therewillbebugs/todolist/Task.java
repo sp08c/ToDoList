@@ -33,6 +33,7 @@ public class Task implements Serializable {
     private Calendar time, date;
     private PRIORITY_LEVEL priorityLevel;
     private boolean complete, notifications;
+    private long notificationDelayInMillis;
 
     //public functions
     //-------------------------------------
@@ -73,6 +74,10 @@ public class Task implements Serializable {
     }
     public void setTime(Calendar in){this.time = in;}
     public void setDate(Calendar in){this.date = in;}
+
+    public void setNotificationDelayInMillis(long delay) {
+        this.notificationDelayInMillis = delay;
+    }
 
     //Accessors
     //-------------------------------------
@@ -133,6 +138,10 @@ public class Task implements Serializable {
         }
 
         return scheduledTime;
+    }
+
+    public long getNotificationDelayInMillis() {
+        return notificationDelayInMillis;
     }
 
     //private functions

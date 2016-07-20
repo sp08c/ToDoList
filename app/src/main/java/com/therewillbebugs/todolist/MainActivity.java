@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
 
         //Init Task List
         selectedTask = null;
-        taskManager = new TaskManager();
+        taskManager = new TaskManager(notificationService);
         taskManager.tempInit(); //TODO REMOVE THIS
 
         //Init toolbar

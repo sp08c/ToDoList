@@ -30,6 +30,11 @@ public class NotificationPublisher extends BroadcastReceiver {
         Collections.sort(notificationTimes);
     }
 
+    public static void removeNotificationTime(Long time) {
+        notificationTimes.remove(time);
+        Collections.sort(notificationTimes);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
