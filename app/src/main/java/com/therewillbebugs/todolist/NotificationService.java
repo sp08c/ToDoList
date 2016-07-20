@@ -32,7 +32,7 @@ public class NotificationService {
         // set required fields for notification
         // TODO: add proper icon, get team's opinion on notification contents
         Notification n = builder.setSmallIcon(R.drawable.notification_template_icon_bg)
-            .setContentTitle(t.getDescription())
+            .setContentTitle(t.getTitle())
             .setContentText(t.getDateTimeString())
             .setPriority(Notification.PRIORITY_HIGH)
             .setVibrate(new long[0])

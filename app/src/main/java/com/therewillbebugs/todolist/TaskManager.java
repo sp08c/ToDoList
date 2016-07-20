@@ -30,6 +30,7 @@ public class TaskManager {
         Collections.sort(taskList, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
+                //XOR for Only one complete item and one non complete
                 if(t1.isComplete() ^ t2.isComplete()){
                     if(t1.isComplete())
                         return 1;
@@ -62,6 +63,7 @@ public class TaskManager {
         Collections.sort(taskList, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
+                //XOR for Only one complete item and one non complete
                 if(t1.isComplete() ^ t2.isComplete()){
                     if(t1.isComplete())
                         return 1;

@@ -41,10 +41,15 @@ public class MainActivity extends AppCompatActivity
     private TaskManager taskManager;
     private Task selectedTask;
 
+    //NotificationService
+    private NotificationService notificationService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        notificationService = new NotificationService(this);
 
         //Init Task List
         selectedTask = null;
@@ -139,6 +144,7 @@ public class MainActivity extends AppCompatActivity
         //If the task creation was successful, add it to the list
         if(success && newTaskCreated) {
             taskManager.add(t);
+            notificationService.createNotification(t);
         }
         swapBackToList();
     }
