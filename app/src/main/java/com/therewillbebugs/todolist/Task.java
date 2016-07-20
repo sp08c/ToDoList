@@ -43,7 +43,7 @@ public class Task implements Serializable {
         this.complete = false;
         this.notifications = true;
         this.time = null;
-        this.date = null;
+        this.date = Calendar.getInstance();
     }
 
     public Task(String title, String description, PRIORITY_LEVEL priorityLevel){
@@ -120,6 +120,19 @@ public class Task implements Serializable {
         if(!tempTime.isEmpty())
         return "Complete By: " + tempDate + " at " + tempTime;
         else return "Complete By: " + tempDate;
+    }
+
+    public long getScheduledTimeInMillis() {
+        long scheduledTime = 0;
+
+        if (date != null) {
+            scheduledTime += date.getTimeInMillis();
+        }
+        if (time != null) {
+            scheduledTime += time.getTimeInMillis();
+        }
+
+        return scheduledTime;
     }
 
     //private functions

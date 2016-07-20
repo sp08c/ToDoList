@@ -19,4 +19,7 @@
     <string name="done_task">Done</string>
     <string name="cancel_task">Cancel</string>
 
+    <!-- Notification Strings -->
+    <string name="notification_title">To-Do List Notification:</string>
+
 </resources>
