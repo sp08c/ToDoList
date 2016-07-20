@@ -2,6 +2,11 @@
     <string name="app_name">ToDoList</string>
     <string name="action_settings">Settings</string>
 
+    <string name="login">Login</string>
+    <string name="need_account">Need Account? Create One</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
     <!-- Navigation Drawer Strings -->
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>

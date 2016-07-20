@@ -164,7 +164,7 @@ public class TaskViewFragment extends android.support.v4.app.Fragment {
     }
 
     public void createNewTask(View view){
-        //Send task back to MainActivity so it can be added to the list
+        //Send task back to TaskActivity so it can be added to the list
         //TODO: add checks for complete form, require description
         task.setTitle(editTextTitle.getText().toString());
         task.setDescription(editTextDescription.getText().toString());
