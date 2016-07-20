@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class NotificationPublisher extends BroadcastReceiver {
-    //public static String NOTIFICATION = "notify";
-    //public static String NOTIFICATION_ID = "a";
-
     private static Map<Long, AbstractMap.SimpleEntry<String, String>> notifications = new HashMap<>();
     private static List<Long> notificationTimes = new LinkedList<>();
 
@@ -40,16 +37,18 @@ public class NotificationPublisher extends BroadcastReceiver {
         AbstractMap.SimpleEntry<String, String> firstNotification =
                 notifications.get(notificationTimes.remove(0));
 
+        // if no notification is found for the specified time, return
         if (firstNotification == null) {
             return;
         }
 
-        String notificationKey = firstNotification.getKey();
+        String notificationKey   = firstNotification.getKey();
         String notificationIdKey = firstNotification.getValue();
 
         int id = intent.getIntExtra(notificationIdKey, 0);
         Notification n = intent.getParcelableExtra(notificationKey);
 
+        // if our Intent was passed properly, notify user
         if (n != null) {
             manager.notify(id, n);
         }
